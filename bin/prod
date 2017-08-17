@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export SERVER_USENAME="root"
+export SERVER_ADDRESS="188.166.161.0"
+export DOCKER_HOST="tcp://${SERVER_ADDRESS}:2375"
+
+COMPOSE="docker-compose -f docker-compose.yml"
+
+case "$@" in
+  * )
+    $COMPOSE "$@"
+    ;;
+esac

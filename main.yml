@@ -1,0 +1,7 @@
+- hosts: all
+  gather_facts: no
+  vars:
+    - ssh_keys_url: "https://github.com/naps62.keys"
+  roles:
+    - common
+    # - alternate_ssh_port

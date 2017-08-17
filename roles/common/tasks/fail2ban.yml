@@ -1,0 +1,12 @@
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install fail2ban
+  apt: name=fail2ban state=latest
+
+- name: fail2ban custom ssh filter is in place
+  lineinfile:
+    state: present
+    destfile: /etc/fail2ban/filter.d/sshd.conf
+    insertafter: "^failregex = .*$"
+    line: '            ^%(__prefix_line)sConnection closed by <HOST> port \d+ \[preauth\]$'

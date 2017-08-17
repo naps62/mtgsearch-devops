@@ -1,0 +1,2 @@
+[servers]
+46.101.244.103 ansible_port=22062 ansible_user=root
