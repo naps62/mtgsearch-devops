@@ -1,0 +1,5 @@
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install iptables-persistent
+  apt: name=iptables-persistent state=latest

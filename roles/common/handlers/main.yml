@@ -3,3 +3,17 @@
   service:
     name: sshd
     state: restarted
+
+- name: Restart fail2ban
+  service:
+    name: fail2ban
+    state: restarted
+
+- name: Save iptables
+  command: invoke-rc.d netfilter-persistent save
+  become: true
+
+- name: Restart dockerd
+  service:
+    name: docker
+    state: restarted

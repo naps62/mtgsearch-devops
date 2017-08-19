@@ -1,0 +1,16 @@
+- name: docker.service has the correct exec line
+  lineinfile:
+    state: present
+    dest: /lib/systemd/system/docker.service
+    regexp: "^ExecStart="
+    line: "ExecStart=/usr/bin/dockerd"
+
+- name: daemon.json file exists
+  copy:
+    src: "./roles/docker-tls-service/files/daemon.json"
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart dockerd
+

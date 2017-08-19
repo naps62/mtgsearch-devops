@@ -10,3 +10,17 @@
     destfile: /etc/fail2ban/filter.d/sshd.conf
     insertafter: "^failregex = .*$"
     line: '            ^%(__prefix_line)sConnection closed by <HOST> port \d+ \[preauth\]$'
+
+- name: fail2ban default debian ssh filter is out
+  file:
+    path: "/etc/fail2ban/jail.d/defaults-debian.conf"
+    state: absent
+
+- name: Fail2ban ssh config is in place
+  template:
+    src: "./roles/common/templates/fail2ban/sshd.conf.j2"
+    dest: "/etc/fail2ban/jail.d/sshd.conf"
+    owner: root
+    group: root
+    mode: 0664
+  notify: Restart fail2ban
