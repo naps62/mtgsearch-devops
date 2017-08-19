@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo ansible-galaxy install alexinthesky.secure-docker-daemon

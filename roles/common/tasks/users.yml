@@ -1,0 +1,35 @@
+---
+- name: Make sure we have a sudo group
+  group:
+    name: sudo
+    state: present
+
+- name: Make sure we have a docker group
+  group:
+    name: docker
+    state: present
+
+- name: Allow 'sudo' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+
+
+- name: Update root password
+  user:
+    name: root
+    update_password: always
+    password: "{{ root_password }}"
+
+- name: Ensure deploy user exists
+  user:
+    name: deploy
+    createhome: yes
+    update_password: always
+    password: "{{ deploy_password }}"
+    shell: /bin/bash
+    groups:
+      - sudo
+      - docker

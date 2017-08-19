@@ -1,8 +1,11 @@
-# - name: ssh configs
-#   include: ssh.yml
+- name: users
+  include: users.yml
+
+- name: ssh configs
+  include: ssh.yml
 
 - name: fail2ban
   include: fail2ban.yml
 
-# - name: iptables
-#   include: iptables.yml
+- name: ufw
+  include: ufw.yml

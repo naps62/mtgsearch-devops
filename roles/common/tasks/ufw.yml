@@ -1,0 +1,4 @@
+---
+- name: firewall is enabled
+  ufw:
+    state: enabled

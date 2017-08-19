@@ -12,5 +12,17 @@
     owner: root
     group: root
     mode: 0644
-  notify: Restart dockerd
+  notify:
+    - Restart dockerd
 
+- name: non-tls docker daemon port is closed
+  ufw:
+    rule: allow
+    port: 2376
+    proto: tcp
+
+- name: non-tls docker daemon port is closed
+  ufw:
+    rule: deny
+    port: 2375
+    proto: tcp

@@ -4,14 +4,29 @@
     - ssh_keys_url: "https://github.com/naps62.keys"
     - ssh_port: "{{ ansible_port }}"
   roles:
-    # - role: alexinthesky.secure-docker-daemon
-    #   dds_host: "*.mtgsear.ch"
-    #   dds_country: "PT"
-    #   dds_state: "Braga"
-    #   dds_locality: "Braga"
-    #   dds_organization: ""
-    #   dds_passphrase: "{{ lookup('env', 'MTGSEARCH_DOCKER_TLS_PASSPHRASE') }}"
-    #   dds_restart_docker: true
+    - role: alternate_ssh_port
+      ssh_timeout: 4
+      tags: ssh
+
+    - role: common
+      tags: common
+
+    - role: alexinthesky.secure-docker-daemon
+      dds_host: "*.mtgsear.ch"
+      dds_country: "PT"
+      dds_state: "Braga"
+      dds_locality: "Braga"
+      dds_organization: ""
+      dds_passphrase: "{{ docker_tls_passphrase }}"
+      dds_client_cert_path: "/home/deploy/.docker"
+      dds_restart_docker: true
+      tags: docker
+
     - role: docker-tls-service
-    - common
-    # - alternate_ssh_port
+      tags:
+        - docker
+        - docker-tls
+
+    - role: nginx
+      tags:
+        - nginx

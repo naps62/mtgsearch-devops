@@ -12,7 +12,7 @@
     state: "started"
     host: "{{ inventory_hostname }}"
     connect_timeout: "5"
-    timeout: "10"
+    timeout: "{{ ssh_timeout }}"
   delegate_to: "localhost"
   ignore_errors: "yes"
   register: default_ssh
@@ -22,9 +22,9 @@
   set_fact:
     ansible_port: "22"
   when: default_ssh is defined and
+        default_ssh.state is defined and
         default_ssh.state == "started"
   register: ssh_port_set
-
 
 # If unreachable on port 22, check if we're able to reach
 # {{ inventory_hostname }} on {{ ansible_port }} provided by the inventory
@@ -35,7 +35,7 @@
     state: "started"
     host: "{{ inventory_hostname }}"
     connect_timeout: "5"
-    timeout: "10"
+    timeout: "{{ ssh_timeout }}"
   delegate_to: "localhost"
   ignore_errors: "yes"
   register: configured_ssh
@@ -57,16 +57,15 @@
     msg: "The SSH port is neither 22 or {{ ansible_port }}."
   when: ssh_port_set is undefined
 
+- name: Ensure alternate configured SSH port is allowed by the firewall
+  ufw:
+    rule: allow
+    port: "{{ configured_port }}"
+    proto: tcp
+
 # Sanity check, make sure Ansible is able to connect to the host
 - name: 
   ping:
-
-- name: Ensure alternate configured SSH port is allowed by iptables
-  iptables:
-    chain: INPUT
-    protocol: tcp
-    destination_port: "{{ configured_port }}"
-    jump: ACCEPT
 
 - name: Setup alternate SSH port
   lineinfile:
@@ -86,12 +85,11 @@
   set_fact:
     ansible_port: "{{ configured_port }}"
 
-- name: Ensure default SSH port is disallowed by iptables
-  iptables:
-    chain: INPUT
-    protocol: tcp
-    destination_port: "22"
-    jump: DROP
+- name: Ensure default SSH port is disallowed by the firewall
+  ufw:
+    rule: deny
+    port: 22
+    proto: tcp
 
 # Gather facts should be set to false when running this role since it will
 # fail if the Ansible SSH port is not set correctly.

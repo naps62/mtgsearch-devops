@@ -1,7 +1,14 @@
-- name: Correct ssh keys are authorized
+- name: Correct ssh keys are authorized for the root user
   authorized_key:
     state: present
     user: root
+    key: "{{ item }}"
+  with_items: "{{ ssh_keys_url }}"
+
+- name: Correct ssh keys are authorized for the deploy user
+  authorized_key:
+    state: present
+    user: deploy
     key: "{{ item }}"
   with_items: "{{ ssh_keys_url }}"
 
@@ -12,4 +19,3 @@
     regexp: "(# )?PasswordAuthentication (no|yes)"
     line: "PasswordAuthentication no"
   notify: Restart SSH
-

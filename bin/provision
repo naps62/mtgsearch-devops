@@ -1,3 +1,39 @@
 #!/bin/bash
 
-ansible-playbook -i hosts main.yml --ask-pass
+source ./.env.secret
+
+_usage() {
+  cat <<EOS
+$0 [OPTIONS]
+
+Provisions a digital ocean docker droplet
+
+OPTIONS:
+  -p
+    On the first provision run, the password given by Digital Ocean's email is required as an argument. Since public SSH keys are added later on, this is no longer needed after the first run.
+EOS
+}
+
+while getopts 'p:h' opt; do
+  case "$opt" in
+    p)
+      droplet_password="$OPTARG"
+      ;;
+    h)
+      _usage
+      exit 0
+      ;;
+  esac
+done
+
+export PASSWORD_STORE_DIR=~/.personal-password-store
+
+ansible-playbook \
+  -i hosts \
+  --extra-vars "\
+    root_password=$MTGSEARCH_ROOT_PASSWORD \
+    deploy_password=$MTGSEARCH_DEPLOY_PASSOWRD \
+    docker_tls_passphrase=$MTGSEARCH_DOCKER_TLS_PASSPHRASE \
+    ansible_ssh_pass=$droplet_password \
+    " \
+  main.yml
