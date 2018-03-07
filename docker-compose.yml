@@ -29,10 +29,10 @@ services:
       - nginx_html:/usr/share/nginx/html
       - nginx_certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - /home/deploy/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
+      - /home/deploy/nginx-gen-templates/:/etc/docker-gen/templates:ro
 
   nginx-letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion:v1.7
     container_name: nginx-letsencrypt
     restart: unless-stopped
     volumes:
