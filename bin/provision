@@ -26,7 +26,11 @@ while getopts 'p:h' opt; do
   esac
 done
 
-export PASSWORD_STORE_DIR=~/.personal-password-store
+export PASSWORD_STORE_DIR=~/.password-store-personal
+
+export ANSIBLE_SSH_ARGS="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+ansible-galaxy install alexinthesky.secure-docker-daemon
 
 ansible-playbook \
   -i hosts \
